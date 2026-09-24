@@ -2,82 +2,73 @@
 import { useState, useCallback } from "react";
 
 import QUESTIONS from "../questions.js";
-import QuestionTimer from './QuestionTimer.jsx'
-import quizCompleteImg from '../assets/quiz-complete.png'
+import QuestionTimer from "./QuestionTimer.jsx";
+import quizCompleteImg from "../assets/quiz-complete.png";
+import Answers from "./Answers.jsx";
 export default function Quiz() {
   // array of questions
   // index of currently displayed question
   const [userAnswers, setUserAnswers] = useState([]);
-  const [answerState, setAnswerState] = useState('');
+  const [answerState, setAnswerState] = useState("");
 
-  const activeQuestionIndex = answerState === '' ? userAnswers.length : userAnswers.length - 1;
-
+  const activeQuestionIndex =
+    answerState === "" ? userAnswers.length : userAnswers.length - 1;
 
   const quizIsComplete = activeQuestionIndex === QUESTIONS.length;
 
-  const handleSelectAnswer = useCallback(function handleSelectAnswer(selectedAnswer) {
-    setAnswerState('answered');
-    setUserAnswers((prevUserAnswers) => {
-      return [...prevUserAnswers, selectedAnswer];
-    });
+  const handleSelectAnswer = useCallback(
+    function handleSelectAnswer(selectedAnswer) {
+      setAnswerState("answered");
+      setUserAnswers((prevUserAnswers) => {
+        return [...prevUserAnswers, selectedAnswer];
+      });
 
-    setTimeout(() => {
+      setTimeout(() => {
         if (selectedAnswer === QUESTIONS[activeQuestionIndex].answers[0]) {
-            setAnswerState('correct');
+          setAnswerState("correct");
         } else {
-            setAnswerState('wrong');
+          setAnswerState("wrong");
         }
 
-        setTimeout( () => {
-            setAnswerState('')
-        }, 2000)
-    }, 1000);
-  }, [activeQuestionIndex]);
+        setTimeout(() => {
+          setAnswerState("");
+        }, 2000);
+      }, 1000);
+    },
+    [activeQuestionIndex],
+  );
 
   const handleSkipAnswer = useCallback(() => {
-    () => handleSelectAnswer(null)
+    () => handleSelectAnswer(null);
   }, [handleSelectAnswer]);
 
   if (quizIsComplete) {
-    return <div id="summary">
-        <img src = {quizCompleteImg} alt="quiz complete trophy"/>
+    return (
+      <div id="summary">
+        <img src={quizCompleteImg} alt="quiz complete trophy" />
         <h2>Quiz completed!</h2>
-    </div>
-  };
-  const shuffledAnswers = [...QUESTIONS[activeQuestionIndex].answers];
-
-  // math random returns value between 0 and 1
-  shuffledAnswers.sort(() => Math.random() - 0.5);
+      </div>
+    );
+  }
 
   // handleSelectAnswer null is called when the timer expires
   // add key prop to Question Timer so timer can get reset (new object was created with the key so new timer prop is required)
   return (
     <div id="quiz">
       <div id="question">
-        <QuestionTimer 
-        key={activeQuestionIndex}
-        timeout={10000} onTimeout={handleSkipAnswer}/>
+        <QuestionTimer
+          key={activeQuestionIndex}
+          timeout={10000}
+          onTimeout={handleSkipAnswer}
+        />
         <h2>{QUESTIONS[activeQuestionIndex].text}</h2>
-        <ul id="answers">
-          {shuffledAnswers.map((answer) => {
-            const isSelected = userAnswers[userAnswers.length - 1] === answer;
-            let cssClass='';
-            if (answerState === 'answered' && isSelected) {
-              cssClass = 'selected';
-            }
-
-            if ((answerState === 'correct' || answerState === 'wrong') && isSelected) {
-              cssClass = answerState;
-            }
-
-            <li key={answer} className="answer">
-              <button onClick={() => handleSelectAnswer(answer)}
-                className={cssClass}>
-                {answer}
-              </button>
-            </li>
-          })}
-        </ul>
+        <Answers
+          key = {activeQuestionIndex}
+          answers={QUESTIONS[activeQuestionIndex].answers}
+          selectedAnswer={userAnswers[userAnswers.length - 1]}
+          answerState={answerState}
+          onSelect={handleSelectAnswer}
+        />
       </div>
     </div>
   );
