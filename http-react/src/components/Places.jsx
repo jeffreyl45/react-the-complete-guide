@@ -1,5 +1,6 @@
 export default function Places({ title, places, fallbackText, onSelectPlace }) {
   console.log(places);
+  // backtick
   return (
     <section className="places-category">
       <h2>{title}</h2>
