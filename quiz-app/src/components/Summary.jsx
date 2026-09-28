@@ -40,6 +40,7 @@ export default function Summary({ userAnswers }) {
             cssClass += ' wrong';
           }
           return (
+            // dont want answer as the key because 2 questions that were skipped have the same key
             <li key={index}>
               <h3>{index + 1}</h3>
               <p className="question">{QUESTIONS[index].text}</p>
