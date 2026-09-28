@@ -3,6 +3,9 @@ import { useState, useEffect } from "react";
 import Places from "./Places.jsx";
 import ErrorPage from './Error.jsx'
 
+import {sortPlacesByDistance} from '../loc.js'
+import { fetchAvailablePlaces } from "../http.js";
+
 // access data synchronously
 localStorage.getItem("places");
 
@@ -21,20 +24,24 @@ export default function AvailablePlaces({ onSelectPlace }) {
     async function fetchPlaces() {
       setIsFetching(true);
       try {
-        const response = await fetch("http://localhost:3000/places");
-        const resData = await response.json();
 
-        // check success or error in response
-        if (!response.ok) {  // 200, 300 status code is success, 400, 500 is error
-          throw new Error('Failed to fetch places');
-        }
+        const places = await fetchAvailablePlaces();
+        
+        // callback function
+        navigator.geolocation.getCurrentPosition((position) => {
+          const sortedPlaces = sortPlacesByDistance(places, position.coords.latitude, position.coords.longitude)
+          setAvailablePlaces(places);
+          setIsFetching(false);
 
-        setAvailablePlaces(resData.places);
+        });
+
+        
       } catch (error) {
         setError({message: error.message || 'Could not fetch places, please try again later'});
+        setIsFetching(false);
+
       }
       // wait for the Promise to finish then get result
-      setIsFetching(false);
     }
     fetchPlaces();
     // fetch only executes if dependencies change
