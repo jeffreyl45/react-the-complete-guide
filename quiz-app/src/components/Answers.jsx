@@ -8,17 +8,19 @@ export default function Answers({
 }) {
   const shuffledAnswers = useRef();
 
-  // only shuffle once
+  // Shuffle answers only once when this component is created
   if (!shuffledAnswers.current) {
     shuffledAnswers.current = [...answers];
-    // math random returns value between 0 and 1
     shuffledAnswers.current.sort(() => Math.random() - 0.5);
   }
+
   return (
     <ul id="answers">
       {shuffledAnswers.current.map((answer) => {
         const isSelected = selectedAnswer === answer;
+
         let cssClass = "";
+
         if (answerState === "answered" && isSelected) {
           cssClass = "selected";
         }
@@ -29,9 +31,14 @@ export default function Answers({
         ) {
           cssClass = answerState;
         }
+
         return (
           <li key={answer} className="answer">
-            <button onClick={() => onSelect(answer)} className={cssClass}>
+            <button
+              onClick={() => onSelect(answer)}
+              className={cssClass}
+              disabled ={answerState !== ''}
+            >
               {answer}
             </button>
           </li>
