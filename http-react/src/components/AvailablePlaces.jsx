@@ -28,6 +28,7 @@ export default function AvailablePlaces({ onSelectPlace }) {
         const places = await fetchAvailablePlaces();
         
         // callback function
+        // get user current position then run this function inside
         navigator.geolocation.getCurrentPosition((position) => {
           const sortedPlaces = sortPlacesByDistance(places, position.coords.latitude, position.coords.longitude)
           setAvailablePlaces(places);

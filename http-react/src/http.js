@@ -10,3 +10,35 @@ export async function fetchAvailablePlaces() {
 
   return resData.places;
 }
+
+export async function fetchUserPlaces() {
+  const response = await fetch("http://localhost:3000/user-places");
+  const resData = await response.json();
+
+  // check success or error in response
+  if (!response.ok) {
+    // 200, 300 status code is success, 400, 500 is error
+    throw new Error("Failed to fetch user places");
+  }
+
+  return resData.places;
+}
+
+// cannot attach javascript array to request so change to JSON
+export async function updateUserPlaces(places) {
+  const response = await fetch('http://localhost:3000/user-places', {
+    method: 'PUT',
+    body: JSON.stringify({places: places}),
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  });
+
+  const resData = await response.json();
+
+  if (!response.ok) {
+    throw new Error('Failed to update user data.');
+    
+  }
+  return resData.message;
+}
