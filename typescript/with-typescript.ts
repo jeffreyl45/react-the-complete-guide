@@ -1,7 +1,7 @@
-function add2(a: number, b: number) {
+function add(a: number, b: number) {
   return a + b;
 }
 
-const result2 = add(2, 5);
+const result = add(2, 5);
 
-console.log(result2);
+console.log(result);
