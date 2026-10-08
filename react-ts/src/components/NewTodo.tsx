@@ -3,6 +3,7 @@ import {TodosContext} from '../store/todos-context';
 import classes from './NewTodo.module.css'
 
 const NewTodo: React.FC = () => {
+    // only accessible because we wrapped contextprovider around newTodo in App.tsx
     const todosCtx = useContext(TodosContext);
 
     const todoTextInputRef = useRef<HTMLInputElement>(null);
